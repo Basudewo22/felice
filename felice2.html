@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mau Jalan, Gak?</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(to right, #fceabb, #f8b500);
+            color: #4a4a4a;
+            text-align: center;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 20px;
+            position: relative;
+            z-index: 2;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        h1 {
+            font-size: 2em;
+            color: #ff6347;
+            margin-bottom: 20px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            padding: 12px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.3s ease, font-size 0.5s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+
+        .button.yes {
+            background-color: #2ecc71;
+            color: #fff;
+        }
+
+        .button.no {
+            background-color: #e74c3c;
+            color: #fff;
+        }
+
+        .options-container,
+        .date-input-container {
+            margin-top: 25px;
+            display: none;
+            animation: fadeIn 0.8s ease-in-out;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .options-container .button {
+            background-color: #3498db;
+            color: #fff;
+        }
+
+        .date-input-container input[type="date"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+        }
+
+        .date-input-container .cta-button {
+            display: inline-block;
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1em;
+            transition: transform 0.3s ease;
+        }
+
+        .date-input-container .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 id="main-heading">Mau jalan bareng, gak?</h1>
+    <div id="initial-buttons" class="button-container">
+        <button id="yes-button" class="button yes">Mau Jalan!</button>
+        <button id="no-button" class="button no">Menolak Jalan</button>
+    </div>
+
+    <div id="options-section" class="options-container">
+        <p>Pilih salah satu:</p>
+        <button class="button option" data-option="Solo Safari">Solo Safari 🦁</button>
+        <button class="button option" data-option="Nonton Bioskop">Nonton Bioskop 🍿</button>
+        <button class="button option" data-option="Jalan-Jalan Santai">Jalan-Jalan Santai 🚶‍♀️</button>
+    </div>
+    
+    <div id="date-section" class="date-input-container">
+        <p id="date-prompt"></p>
+        <input type="date" id="date-picker">
+        <a id="send-whatsapp" class="cta-button" target="_blank">Kirim Tanggal ke WhatsApp</a>
+    </div>
+</div>
+
+<script>
+    const yesButton = document.getElementById('yes-button');
+    const noButton = document.getElementById('no-button');
+    const initialButtons = document.getElementById('initial-buttons');
+    const optionsSection = document.getElementById('options-section');
+    const optionButtons = document.querySelectorAll('.option');
+    const dateSection = document.getElementById('date-section');
+    const datePicker = document.getElementById('date-picker');
+    const sendWhatsappLink = document.getElementById('send-whatsapp');
+    const mainHeading = document.getElementById('main-heading');
+    const datePrompt = document.getElementById('date-prompt');
+    let selectedActivity = '';
+
+    noButton.addEventListener('click', () => {
+        let yesButtonSize = parseFloat(getComputedStyle(yesButton).fontSize) / 16;
+        yesButtonSize += 0.2;
+        yesButton.style.fontSize = `${yesButtonSize}em`;
+        const funnyMessages = ["Yakin nih? Aku tungguin, lho!", "Ayolah, jangan begitu!", "Sekali lagi pikir-pikir ya...", "Tombol ini makin besar, lho..."];
+        mainHeading.innerText = funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
+    });
+
+    yesButton.addEventListener('click', () => {
+        initialButtons.style.display = 'none';
+        optionsSection.style.display = 'flex';
+        mainHeading.innerText = 'Yay, asik! Mau ngapain?';
+    });
+
+    optionButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            selectedActivity = e.target.getAttribute('data-option');
+            optionsSection.style.display = 'none';
+            dateSection.style.display = 'flex';
+            mainHeading.innerText = `Oke, ${selectedActivity} asik!`;
+            datePrompt.innerText = `Pilih tanggal di bulan September (setelah tanggal 7) ya:`;
+            
+            // Atur batas tanggal
+            const minDate = '2025-09-08';
+            datePicker.setAttribute('min', minDate);
+            
+            // Set max date untuk bulan September
+            const maxDate = '2025-09-30';
+            datePicker.setAttribute('max', maxDate);
+        });
+    });
+
+    sendWhatsappLink.addEventListener('click', (e) => {
+        const selectedDate = datePicker.value;
+        if (!selectedDate) {
+            alert('Pilih tanggal dulu ya!');
+            e.preventDefault();
+            return;
+        }
+
+        const formattedDate = new Date(selectedDate).toLocaleDateString('id-ID', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+
+        // Ganti [Nomor HP] dengan nomor yang dituju
+        const phoneNumber = "62881026423994"; // Ganti dengan nomor WhatsApp
+        const message = `Yeeey, jadi jalan! Aku pilih ${selectedActivity} di tanggal ${formattedDate}. Gimana?`;
+        const encodedMessage = encodeURIComponent(message);
+        sendWhatsappLink.href = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+    });
+</script>
+
+</body>
+</html>
